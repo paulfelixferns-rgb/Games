@@ -18,6 +18,6 @@
 - **ML Dashboard_2**: https://paulfelixferns.pythonanywhere.com/dash2/
 - **21+ Years Enterprise Python**
 
-**Senior GenAI/ML Engineer | ₹45-60L | Airtel ML Production**
+**Senior GenAI/ML Engineer | Airtel ML Production**
 
 games
