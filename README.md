@@ -14,7 +14,8 @@
 
 ## 🎯 FULL PORTFOLIO
 - **CV**: https://paulfelixferns.pythonanywhere.com/Cv/Paul_Felix_CV.html
-- **ML Dashboard**: https://paulfelixferns.pythonanywhere.com/dash2/
+- **ML Dashboard_1**: https://paulfelix.pythonanywhere.com/dash1/
+- **ML Dashboard_2**: https://paulfelixferns.pythonanywhere.com/dash2/
 - **21+ Years Enterprise Python**
 
 **Senior GenAI/ML Engineer | ₹45-60L | Airtel ML Production**
