@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Bible Quiz - Paul ML Portfolio</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%);
+    color: #fff; font-family: Arial; text-align: center; min-height: 100vh;
+}
+.container { max-width: 600px; margin: 0 auto; padding: 20px; }
+h1 { color: gold; margin: 20px 0; font-size: 28px; }
+#counter { position: fixed; top: 10px; right: 10px; background: gold; color: #333; padding: 10px; border-radius: 10px; font-weight: bold; z-index: 1000; }
+.question { background: rgba(255,255,255,0.1); padding: 30px; border-radius: 20px; margin: 20px 0; backdrop-filter: blur(10px); }
+#question-text { font-size: 22px; margin-bottom: 25px; color: gold; }
+.options { display: flex; flex-direction: column; gap: 15px; }
+.option { background: rgba(255,215,0,0.2); padding: 20px; border-radius: 15px; cursor: pointer; font-size: 18px; border: 2px solid gold; transition: all 0.3s; }
+.option:hover { background: rgba(255,215,0,0.4); transform: scale(1.02); }
+.option.correct { background: #90EE90; color: #006400; }
+.option.incorrect { background: #ff6b6b; color: white; }
+#score { font-size: 24px; color: gold; margin: 20px 0; }
+#next-btn, #start-btn { background: gold; color: #333; padding: 15px 40px; border: none; border-radius: 25px; font-size: 20px; font-weight: bold; cursor: pointer; margin: 20px; }
+@media (max-width: 480px) { .option { padding: 15px; font-size: 16px; } }
+</style>
+</head>
+<body>
+<div id="counter">Visitors: <span id="count">0</span></div>
+
+<div class="container">
+<h1>📖 Bible Quiz Game</h1>
+<div id="start-screen">
+    <p style="font-size: 20px; margin: 30px 0;">Test your Bible knowledge!<br>10 questions • 4 options each</p>
+    <button id="start-btn" onclick="startQuiz()">Start Bible Quiz 🙏</button>
+</div>
+
+<div id="quiz-screen" style="display:none">
+    <div id="score">Score: <span id="current-score">0</span>/10</div>
+    <div class="question">
+        <div id="question-text">Click Start to begin!</div>
+        <div id="options" class="options"></div>
+        <button id="next-btn" onclick="nextQuestion()" style="display:none">Next Question ➡️</button>
+    </div>
+</div>
+
+<div id="end-screen" style="display:none">
+    <h2 id="final-score"></h2>
+    <p>Final Score: <span id="final-score-num">0</span>/10</p>
+    <button onclick="location.reload()">Play Again 📖</button>
+</div>
+</div>
+
+<script>
+// COUNTER
+let count = localStorage.getItem('game3_visits') || 0;
+count = parseInt(count) + 1;
+localStorage.setItem('game3_visits', count);
+document.getElementById('count').textContent = count;
+
+// QUIZ DATA - CHANGED const to let
+let questions = [
+    { q: "Who was swallowed by a big fish?", o: ["Jonah", "Daniel", "Noah", "Moses"], a: 0 },
+    { q: "How many days did God take to create the world?", o: ["6", "7", "8", "10"], a: 0 },
+    { q: "Who built the ark?", o: ["Noah", "Abraham", "David", "Solomon"], a: 0 },
+    { q: "How many disciples did Jesus have?", o: ["10", "12", "15", "7"], a: 1 },
+    { q: "What was David's weapon against Goliath?", o: ["Bow", "Sword", "Sling", "Spear"], a: 2 },
+    { q: "Who betrayed Jesus?", o: ["Peter", "John", "Judas", "Thomas"], a: 2 },
+    { q: "How many plagues in Egypt?", o: ["7", "10", "12", "5"], a: 1 },
+    { q: "First book of Bible?", o: ["Exodus", "Genesis", "Leviticus", "Matthew"], a: 1 },
+    { q: "Jesus walked on?", o: ["Land", "Sand", "Water", "Clouds"], a: 2 },
+    { q: "Fruit forbidden in Eden?", o: ["Apple", "Orange", "Grape", "Fig"], a: 0 }
+];
+
+let currentQuestion = 0, score = 0, selectedAnswer = -1;
+
+// SHUFFLE FUNCTION
+function shuffleQuestions() {
+    for (let i = questions.length - 1; i > 0; i--) {
+        const j = Math.random() * (i + 1) | 0;
+        [questions[i], questions[j]] = [questions[j], questions[i]];
+    }
+    return questions;
+}
+
+// SINGLE startQuiz FUNCTION - FIXED!
+function startQuiz() {
+    document.getElementById('start-screen').style.display = 'none';
+    document.getElementById('quiz-screen').style.display = 'block';
+    questions = shuffleQuestions();  // RANDOMIZE!
+    currentQuestion = 0;
+    score = 0;
+    document.getElementById('current-score').textContent = score;
+    showQuestion();
+}
+
+function showQuestion() {
+    const q = questions[currentQuestion];
+    document.getElementById('question-text').textContent = q.q;
+    const optionsDiv = document.getElementById('options');
+    optionsDiv.innerHTML = '';
+    q.o.forEach((option, i) => {
+        const btn = document.createElement('div');
+        btn.className = 'option';
+        btn.textContent = option;
+        btn.onclick = () => selectAnswer(i);
+        optionsDiv.appendChild(btn);
+    });
+    document.getElementById('next-btn').style.display = 'none';
+    selectedAnswer = -1;
+}
+
+function selectAnswer(index) {
+    if (selectedAnswer !== -1) return;
+    selectedAnswer = index;
+    const options = document.querySelectorAll('.option');
+    options.forEach((opt, i) => {
+        if (i === questions[currentQuestion].a) opt.classList.add('correct');
+        else if (i === index) opt.classList.add('incorrect');
+    });
+    if (index === questions[currentQuestion].a) score++;
+    document.getElementById('current-score').textContent = score;
+    document.getElementById('next-btn').style.display = 'inline-block';
+}
+
+function nextQuestion() {
+    currentQuestion++;
+    if (currentQuestion < questions.length) {
+        showQuestion();
+    } else {
+        endQuiz();
+    }
+}
+
+function endQuiz() {
+    document.getElementById('quiz-screen').style.display = 'none';
+    document.getElementById('end-screen').style.display = 'block';
+    document.getElementById('final-score-num').textContent = score;
+    document.getElementById('final-score').textContent = score === 10 ? '🏆 PERFECT!' :
+        score >= 8 ? '🎉 Excellent!' : score >= 6 ? '👍 Good Job!' : '📖 Keep Studying!';
+}
+</script>
+</body>
+</html>

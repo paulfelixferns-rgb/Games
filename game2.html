@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Tic Tac Toe vs AI - FIXED</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+    color: white; font-family: Arial; min-height: 100vh;
+    display: flex; align-items: center; justify-content: center; padding: 20px;
+}
+.container { text-align: center; max-width: 500px; width: 100%; }
+h1 { color: gold; margin-bottom: 20px; font-size: 32px; }
+.players { display: flex; justify-content: center; gap: 40px; margin: 20px 0; font-size: 24px; }
+.player-active { color: gold; text-shadow: 0 0 10px gold; animation: pulse 1s infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+.computer { color: #ff6b6b; font-weight: bold; }
+table { border-collapse: collapse; margin: 30px auto; width: 90%; max-width: 450px; }
+td {
+    width: 140px; height: 140px; border: 4px solid gold;
+    text-align: center; font-size: 64px; font-weight: bold;
+    color: white !important; cursor: pointer;
+    background: rgba(0,0,0,0.6) !important;
+    transition: all 0.3s; border-radius: 12px;
+}
+td:hover:not([class="win"]) { background: rgba(0,0,0,0.8) !important; transform: scale(1.05); }
+.win { background: #10b981 !important; box-shadow: 0 0 30px #10b981 !important; }
+#status { font-size: 28px; color: gold; margin: 25px 0; }
+button { background: gold; color: #1e3a8a; padding: 18px 40px; border: none; border-radius: 25px; font-size: 22px; font-weight: bold; cursor: pointer; margin: 20px; }
+@media (max-width: 480px) { td { width: 110px; height: 110px; font-size: 48px; } }
+</style>
+</head>
+<body>
+<div id="counter">Visitors: <span id="count">0</span></div>
+<div class="container">
+<h1>🤖 Tic Tac Toe vs AI</h1>
+<div class="players">
+    <div id="player1" class="player-active">You (X)</div>
+    <div id="player2" class="computer">Computer (O)</div>
+</div>
+<table id="board">
+    <tr><td></td><td></td><td></td></tr>
+    <tr><td></td><td></td><td></td></tr>
+    <tr><td></td><td></td><td></td></tr>
+</table>
+<p id="status">Your turn! Click any empty cell.</p>
+<button onclick="resetGame()">New Game 🎮</button>
+</div>
+
+<script>
+let board = Array(9).fill('');
+let gameActive = true;
+const status = document.getElementById('status');
+const player1Div = document.getElementById('player1');
+const player2Div = document.getElementById('player2');
+
+// COUNTER
+let count = localStorage.getItem('game2_visits') || 0;
+count = parseInt(count) + 1;
+localStorage.setItem('game2_visits', count);
+document.getElementById('count').textContent = count;
+
+function checkWin(player) {
+    const wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+    for (let winCombo of wins) {
+        if (board[winCombo[0]] === player && board[winCombo[1]] === player && board[winCombo[2]] === player) {
+            document.querySelectorAll('td')[winCombo[0]].className = 'win';
+            document.querySelectorAll('td')[winCombo[1]].className = 'win';
+            document.querySelectorAll('td')[winCombo[2]].className = 'win';
+            gameActive = false;
+            if (player === 'X') {
+                status.textContent = '🏆 YOU WIN! Amazing!';
+                player1Div.classList.add('player-active');
+            } else {
+                status.textContent = '🤖 Computer Wins! Good try!';
+                player2Div.classList.add('player-active');
+            }
+            return true;
+        }
+    }
+    if (!board.includes('')) {
+        status.textContent = "It's a DRAW! 😅";
+        gameActive = false;
+        return true;
+    }
+    return false;
+}
+
+// SIMPLIFIED COMPUTER AI - NO RECURSION!
+function computerMove() {
+    if (!gameActive) return;
+
+    // Strategy 1: Win if possible
+    for (let i = 0; i < 9; i++) {
+        if (board[i] === '') {
+            board[i] = 'O';
+            if (checkWin('O')) return;
+            board[i] = '';
+        }
+    }
+
+    // Strategy 2: Block player win
+    for (let i = 0; i < 9; i++) {
+        if (board[i] === '') {
+            board[i] = 'X';
+            if (checkWin('X')) {
+                board[i] = 'O';  // Make the blocking move
+                document.querySelectorAll('td')[i].textContent = 'O';
+                checkWin('O');
+                return;
+            }
+            board[i] = '';
+        }
+    }
+
+    // Strategy 3: Take center
+    if (board[4] === '') {
+        board[4] = 'O';
+        document.querySelectorAll('td')[4].textContent = 'O';
+        checkWin('O');
+        return;
+    }
+
+    // Strategy 4: Take corner
+    const corners = [0, 2, 6, 8];
+    for (let corner of corners) {
+        if (board[corner] === '') {
+            board[corner] = 'O';
+            document.querySelectorAll('td')[corner].textContent = 'O';
+            checkWin('O');
+            return;
+        }
+    }
+
+    // Strategy 5: Random move
+    const emptyCells = [];
+    for (let i = 0; i < 9; i++) {
+        if (board[i] === '') emptyCells.push(i);
+    }
+    const randomMove = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+    board[randomMove] = 'O';
+    document.querySelectorAll('td')[randomMove].textContent = 'O';
+    checkWin('O');
+}
+
+// PLAYER CLICK
+document.querySelectorAll('td').forEach((td, i) => {
+    td.onclick = () => {
+        if (board[i] === '' && gameActive) {
+            board[i] = 'X';
+            td.textContent = 'X';
+            if (checkWin('X')) return;
+
+            player1Div.classList.remove('player-active');
+            player2Div.classList.add('player-active');
+            status.textContent = 'Computer thinking... 🤖';
+
+            setTimeout(() => {
+                computerMove();
+                if (gameActive) {
+                    player2Div.classList.remove('player-active');
+                    player1Div.classList.add('player-active');
+                    status.textContent = 'Your turn! (X)';
+                }
+            }, 800);
+        }
+    };
+});
+
+function resetGame() {
+    board = Array(9).fill('');
+    gameActive = true;
+    status.textContent = "Your turn! Click any empty cell.";
+    player1Div.classList.add('player-active');
+    player2Div.classList.remove('player-active');
+    document.querySelectorAll('td').forEach(td => {
+        td.textContent = '';
+        td.className = '';
+        td.style.background = 'rgba(0,0,0,0.6)';
+    });
+}
+</script>
+</body>
+</html>
