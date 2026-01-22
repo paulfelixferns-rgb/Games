@@ -8,9 +8,9 @@
 
 | Game | Demo | Visitors |
 |------|------|----------|
-| 🐍 Snake | [![Snake](screenshots/snake-mobile.png)](https://paulfelixferns.pythonanywhere.com/games/game1.html) | [LIVE](https://paulfelixferns.pythonanywhere.com/games/game1.html) |
-| 🤖 AI Tic-Tac-Toe | [![AI](screenshots/tictactoe-ai.png)](https://paulfelixferns.pythonanywhere.com/games/game2.html) | [LIVE](https://paulfelixferns.pythonanywhere.com/games/game2.html) |
-| 📖 Bible Quiz | [![Quiz](screenshots/bible-quiz.png)](https://paulfelixferns.pythonanywhere.com/games/game3.html) | [LIVE](https://paulfelixferns.pythonanywhere.com/games/game3.html) |
+| 🐍 Snake | [![Snake](screenshots/snake-mobile.png)](https://paulfelixferns.pythonanywhere.com/Games/game1.html) | [LIVE](https://paulfelixferns.pythonanywhere.com/games/game1.html) |
+| 🤖 AI Tic-Tac-Toe | [![AI](screenshots/tictactoe-ai.png)](https://paulfelixferns.pythonanywhere.com/Games/game2.html) | [LIVE](https://paulfelixferns.pythonanywhere.com/games/game2.html) |
+| 📖 Bible Quiz | [![Quiz](screenshots/bible-quiz.png)](https://paulfelixferns.pythonanywhere.com/Games/game3.html) | [LIVE](https://paulfelixferns.pythonanywhere.com/games/game3.html) |
 
 ## 🎯 FULL PORTFOLIO
 - **CV**: https://paulfelixferns.pythonanywhere.com/Cv/Paul_Felix_CV.html
